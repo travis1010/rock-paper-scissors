@@ -14,44 +14,52 @@ function playRound(playerSelection, computerSelection) {
   switch(RULE_BOOK[playerSelection].indexOf(computerSelection)) {
     case 0:
       playerScore++;
-      return `You win! ${playerSelection} beats ${computerSelection}`;
+      return `You win! ${capitalize(playerSelection)} beats ${capitalize(computerSelection)}.`;
     break;
     case 1:
       computerScore++;
-      return `You lose! ${computerSelection} beats ${playerSelection}`;
+      return `You lose! ${capitalize(computerSelection)} beats ${capitalize(playerSelection)}.`;
     break;
     case 2:
-      return `It's a tie! you both chose ${playerSelection}`;
+      return `It's a tie! you both chose ${capitalize(playerSelection)}.`;
     break;
   }
 }
 
-function game(){
-  let round = 1;
-  while(playerScore < 3 && computerScore < 3) {
-    let computerSelection = computerPlay();
-    let playerSelection = prompt("Enter your move:").toLowerCase();
-    console.log(`Round ${round}:`);
-    console.log(playRound(playerSelection, computerSelection));
-    console.log(`SCORE...Player: ${playerScore}, Computer: ${computerScore}`);
-    round++;
-  }
-  if (playerScore > computerScore) {
-    console.log("Congrats! You win!");
-  } else {
-    console.log("You LOSE!");
-  }
-  let answer = prompt("Do you want to play again? (yes or no)").toLowerCase();
-  if (answer == "yes") {
-    playerScore = 0;
-    computerScore = 0;
-    game();
-  } else {
-    console.log("goodbye!");
-  }
+function capitalize(s) {
+  return s[0].toUpperCase() + s.slice(1);
 }
 
+const buttons = document.querySelectorAll('button')
 
+buttons.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    let playerChoice = btn.value;
+    let computerChoice = computerPlay();
 
-game();
+    const playerChoiceDiv = document.querySelector('#player-choice');
+    const computerChoiceDiv = document.querySelector('#computer-choice');
+    playerChoiceDiv.textContent = `${capitalize(playerChoice)}!`;
+    computerChoiceDiv.textContent = `${capitalize(computerChoice)}!`;
 
+    let result = playRound(playerChoice, computerChoice);
+    const resultDiv = document.querySelector('#results');
+    resultDiv.textContent = result;
+
+    const playerScoreboard  = document.querySelector('#player-score');
+    playerScoreboard.textContent = `Player: ${playerScore}`
+
+    const computerScoreboard  = document.querySelector('#computer-score');
+    computerScoreboard.textContent = `Computer: ${computerScore}`
+
+    if(playerScore == 5) {
+      resultDiv.textContent = 'Congrats! You win!'
+      playerScore = 0;
+      computerScore = 0;
+    } else if(computerScore == 5) {
+      resultDiv.textContent = 'Sorry! You lose!'
+      playerScore = 0;
+      computerScore = 0;
+    }
+  });
+});
